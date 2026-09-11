@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     DB_HOST: str
     DB_NAME: str
 
+    GOOGLE_CLIENT_ID: str
+
     model_config = SettingsConfigDict(
         env_file="./.env",
         extra="ignore"
