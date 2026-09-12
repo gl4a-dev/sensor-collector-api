@@ -219,3 +219,6 @@ __marimo__/
 
 # IDE
 .vscode/
+
+# AUTH
+firebase-service-account.json

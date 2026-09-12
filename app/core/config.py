@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     DB_NAME: str
 
     GOOGLE_CLIENT_ID: str
+    FIREBASE_CREDENTIALS_PATH: str
 
     model_config = SettingsConfigDict(
         env_file="./.env",
