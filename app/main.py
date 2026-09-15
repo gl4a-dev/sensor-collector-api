@@ -6,6 +6,10 @@ from slowapi.errors import RateLimitExceeded
 
 from app.api.v1.router import api_router
 
+# from app.models import Base, Measurement, WifiConnection, MobileConnection, WifiScan
+# from app.db.session import engine
+
+# Base.metadata.create_all(bind=engine)
 
 limiter = Limiter(key_func=get_remote_address)
 
