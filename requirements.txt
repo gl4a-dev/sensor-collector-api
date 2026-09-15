@@ -30,6 +30,7 @@ hyperframe==6.1.0
 idna==3.19
 limits==5.8.0
 msgpack==1.2.2
+numpy==2.5.3
 opentelemetry-api==1.44.0
 packaging==26.3
 pathspec==1.1.1
@@ -46,6 +47,7 @@ Pygments==2.21.0
 PyJWT==2.14.0
 python-dotenv==1.2.3
 requests==2.34.2
+shapely==2.1.2
 slowapi==0.1.10
 SQLAlchemy==2.0.52
 starlette==1.6.0
