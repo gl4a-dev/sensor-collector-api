@@ -14,6 +14,15 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str
     FIREBASE_CREDENTIALS_PATH: str
 
+    RATE_LIMIT_BATCH: str
+    RATE_LIMIT_AUTH: str
+
+    MAX_MEASUREMENT_AGE_DAYS: int
+    MAX_ACCURACY_METERS: float
+    MAX_PING_MS: float
+    MAX_DOWNLOAD_MBPS: float
+    MAX_NOISE_DBFS: float
+
     REGION_POINTS: list[list[float]] = []
 
     model_config = SettingsConfigDict(

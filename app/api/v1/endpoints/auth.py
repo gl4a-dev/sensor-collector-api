@@ -1,12 +1,17 @@
 import jwt
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, Request, HTTPException, status
 from sqlalchemy.orm import Session
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.core.config import settings
 from app.db.session import get_db
 from app.models.allowed_user import AllowedUser
 from app.schemas.auth import AuthSuccessResponse, GoogleAuthRequest, UserResponse
 
+
+limiter = Limiter(key_func=get_remote_address)
+router = APIRouter()
 
 router = APIRouter()
 
@@ -16,7 +21,9 @@ router = APIRouter()
     response_model=AuthSuccessResponse,
     summary="Validate Google ID Token and verify user authorization in NeonDB",
 )
+@limiter.limit(settings.RATE_LIMIT_AUTH)
 async def authenticate_google_user(
+    request: Request,
     data: GoogleAuthRequest,
     db: Session = Depends(get_db),
 ):

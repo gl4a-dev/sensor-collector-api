@@ -11,8 +11,11 @@ logger = logging.getLogger(__name__)
 
 
 class GeofenceSanitizer(BaseSanitizer[MeasurementSchema]):
-    REGION_POLYGON = Polygon(settings.REGION_POINTS) if (settings.REGION_POINTS and len(settings.REGION_POINTS) >= 3) else None
-    MAX_ACCURACY_METERS = 200.0
+    REGION_POLYGON = (
+        Polygon(settings.REGION_POINTS) 
+        if (settings.REGION_POINTS and len(settings.REGION_POINTS) >= 3) 
+        else None
+    )
 
     def validate(self, item: MeasurementSchema) -> bool:
         if not item.location or self.REGION_POLYGON is None:
@@ -25,7 +28,7 @@ class GeofenceSanitizer(BaseSanitizer[MeasurementSchema]):
         if not self.REGION_POLYGON.contains(Point(lon, lat)):
             return False
 
-        if item.location.accuracy < 0 or item.location.accuracy > self.MAX_ACCURACY_METERS:
+        if item.location.accuracy < 0 or item.location.accuracy > settings.MAX_ACCURACY_METERS:
             return False
 
         return True
@@ -44,7 +47,7 @@ class TimestampSanitizer(BaseSanitizer[MeasurementSchema]):
             if dt > now:
                 return False
 
-            if (now - dt).days > 30:
+            if (now - dt).days > settings.MAX_MEASUREMENT_AGE_DAYS:
                 return False
 
             return True
@@ -57,20 +60,18 @@ class NetworkQualitySanitizer(BaseSanitizer[MeasurementSchema]):
     def validate(self, item: MeasurementSchema) -> bool:
         if item.internet_quality:
             iq = item.internet_quality
-            if (iq.ping is not None and (iq.ping < 0 or iq.ping > 30000)) or (iq.download_mbps is not None and (iq.download_mbps < 0 or iq.download_mbps > 2000)):
+            if (iq.ping is not None and (iq.ping < 0 or iq.ping > settings.MAX_PING_MS)) or (iq.download_mbps is not None and (iq.download_mbps < 0 or iq.download_mbps > settings.MAX_DOWNLOAD_MBPS)):
                 return False
         return True
 
 
 class AudioSanitizer(BaseSanitizer[MeasurementSchema]):
-    MAX_DBFS = 0.0
-
     def validate(self, item: MeasurementSchema) -> bool:
         if item.noise_measurement:
             nm = item.noise_measurement
 
             if nm.db is not None:
-                if nm.db > self.MAX_DBFS:
+                if nm.db > settings.MAX_NOISE_DBFS:
                     return False
 
             if nm.rms is not None and nm.rms < 0:

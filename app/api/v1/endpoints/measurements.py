@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
+from app.core.config import settings
 from app.core.security import verify_firebase_token
 from app.db.session import get_db
 from app.schemas.measurement import MeasurementBatchSchema
@@ -20,7 +21,7 @@ measurement_factory = MeasurementFactory()
 
 
 @router.post("/batch", status_code=status.HTTP_201_CREATED)
-@limiter.limit("20/minute")
+@limiter.limit(settings.RATE_LIMIT_BATCH)
 async def receive_measurement_batch(
     request: Request,
     batch: MeasurementBatchSchema,
